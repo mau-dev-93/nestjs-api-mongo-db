@@ -1,4 +1,3 @@
-
 # NestJS API + MongoDB
 
 Este proyecto es una API REST construida con [NestJS](https://nestjs.com/) y [MongoDB](https://www.mongodb.com/) usando [Mongoose](https://mongoosejs.com/) como ODM. Actualmente, la API expone el módulo **Permissions**, pero está diseñada para crecer y agregar más funcionalidades en el futuro.
@@ -11,23 +10,23 @@ Este proyecto es una API REST construida con [NestJS](https://nestjs.com/) y [Mo
 ## Instalación
 
 1. Clona el repositorio:
-   ```bash
-   git clone <URL-del-repositorio>
-   cd nestjs-api-mongo-db
-   ```
+    ```bash
+    git clone <URL-del-repositorio>
+    cd nestjs-api-mongo-db
+    ```
 2. Instala las dependencias:
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 3. Configura las variables de entorno:
-   - Copia el archivo de ejemplo y edítalo según tu entorno:
-     ```bash
-     cp env/development.env env/production.env
-     ```
-   - Edita `env/development.env` y agrega tu URI de MongoDB:
-     ```env
-     MONGODB_URI=mongodb://localhost:27017/mi_basededatos
-     ```
+    - Copia el archivo de ejemplo y edítalo según tu entorno:
+        ```bash
+        cp env/development.env env/production.env
+        ```
+    - Edita `env/development.env` y agrega tu URI de MongoDB:
+        ```env
+        MONGODB_URI=mongodb://localhost:27017/mi_basededatos
+        ```
 
 ## Configuración de Mongoose
 
@@ -36,7 +35,7 @@ La conexión a MongoDB se realiza usando Mongoose. La configuración se encuentr
 ```typescript
 // src/config/config.ts
 export default () => ({
-  mongodbUri: process.env.MONGODB_URI,
+	mongodbUri: process.env.MONGODB_URI,
 });
 ```
 
@@ -46,11 +45,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import config from './config/config';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot(config().mongodbUri),
-    // ...otros módulos
-  ],
-  // ...
+	imports: [
+		MongooseModule.forRoot(config().mongodbUri),
+		// ...otros módulos
+	],
+	// ...
 })
 export class AppModule {}
 ```
@@ -70,8 +69,8 @@ El módulo **Permissions** permite gestionar permisos en la base de datos. Inclu
 ```typescript
 // src/modules/permissions/model/permission-model.ts
 export class Permission {
-  readonly name: string;
-  readonly description: string;
+	readonly name: string;
+	readonly description: string;
 }
 ```
 
@@ -82,8 +81,8 @@ export class Permission {
 import { Schema } from 'mongoose';
 
 export const PermissionSchema = new Schema({
-  name: { type: String, required: true },
-  description: { type: String },
+	name: { type: String, required: true },
+	description: { type: String },
 });
 ```
 
