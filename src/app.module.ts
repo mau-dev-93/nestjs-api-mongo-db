@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
 		}),
 		// modules
 		PermissionsModule,
+		RolesModule,
 	],
 	controllers: [],
 	providers: [],

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { PermissionModel } from './model/permission-model';
 import { InjectModel } from '@nestjs/mongoose';
 import { PermissionUpdateModel } from './model/permission-update-model';
+import { RoleModel } from '../roles/model/role-model';
 
 @Injectable()
 export class PermissionsService {
@@ -13,10 +14,9 @@ export class PermissionsService {
 	) {}
 
 	async createPermission(permission: PermissionModel) {
-		const permissionExists = await this.permissionModel.findOne({
-			name: permission.name,
-		});
-
+		const permissionExists = await this.findPermissionByName(
+			permission.name,
+		);
 		if (permissionExists) {
 			throw new ConflictException('El permiso con el nombre ya existe');
 		}
@@ -37,9 +37,9 @@ export class PermissionsService {
 	}
 
 	async updatePermission(permissionUpdateModel: PermissionUpdateModel) {
-		const permissionExists = await this.permissionModel.findOne({
-			name: permissionUpdateModel.originalName,
-		});
+		const permissionExists = await this.findPermissionByName(
+			permissionUpdateModel.originalName,
+		);
 
 		const newPermissionExists = await this.permissionModel.findOne({
 			name: permissionUpdateModel.newName,
@@ -71,5 +71,11 @@ export class PermissionsService {
 		} else {
 			throw new ConflictException('El permiso no existe');
 		}
+	}
+
+	async findPermissionByName(name: string) {
+		return await this.permissionModel.findOne({
+			name,
+		});
 	}
 }

@@ -1,5 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	Query,
+} from '@nestjs/common';
+import {
+	ApiBody,
+	ApiOperation,
+	ApiParam,
+	ApiQuery,
+	ApiResponse,
+	ApiTags,
+} from '@nestjs/swagger';
 import { PermissionsService } from './permissions.service';
 import { PermissionModel } from './model/permission-model';
 import { PermissionUpdateModel } from './model/permission-update-model';
@@ -89,8 +105,12 @@ export class PermissionsController {
 		status: 409,
 		description: 'Conflicto al actualizar el permiso',
 	})
-	async updatePermission(@Body() permissionUpdateModel: PermissionUpdateModel) {
-		return await this.permissionsService.updatePermission(permissionUpdateModel);
+	async updatePermission(
+		@Body() permissionUpdateModel: PermissionUpdateModel,
+	) {
+		return await this.permissionsService.updatePermission(
+			permissionUpdateModel,
+		);
 	}
 
 	@Delete('/:name')
