@@ -124,7 +124,11 @@ export class RolesController {
 	})
 	@ApiResponse({
 		status: 200,
-		description: 'Permiso removido correctamente',
+		description: 'Permiso removido del rol correctamente',
+	})
+	@ApiResponse({
+		status: 409,
+		description: 'Rol no existe. <br/> El permiso no existe. <br/> El permiso no existe en el rol.',
 	})
 	@Delete('/remove-permission/:name')
 	async removePermission(@Param('name') name: string, @Body() permission: PermissionModel) {
