@@ -54,37 +54,112 @@ import config from './config/config';
 export class AppModule {}
 ```
 
-## API: Permissions
 
-El módulo **Permissions** permite gestionar permisos en la base de datos. Incluye las siguientes rutas:
+## API: Roles y Permisos
 
-- `GET /permissions` - Listar todos los permisos
-- `GET /permissions/:id` - Obtener un permiso por ID
-- `POST /permissions` - Crear un nuevo permiso
-- `PUT /permissions/:id` - Actualizar un permiso
-- `DELETE /permissions/:id` - Eliminar un permiso
+El proyecto cuenta con dos módulos principales: **Roles** y **Permissions**. Ambos están integrados y permiten gestionar la seguridad y acceso en la aplicación.
 
-### Ejemplo de modelo
+### Permissions
+
+Permite crear, consultar y actualizar permisos en la base de datos.
+
+#### Endpoints principales
+
+- `POST /api/v1/permissions` - Crear un nuevo permiso
+- `GET /api/v1/permissions` - Listar permisos (filtro opcional por nombre)
+- `PUT /api/v1/permissions` - Actualizar un permiso (requiere modelo de actualización)
+- `DELETE /api/v1/permissions/:id` - Eliminar un permiso por ID
+
+#### Modelo
 
 ```typescript
 // src/modules/permissions/model/permission-model.ts
-export class Permission {
-	readonly name: string;
-	readonly description: string;
+export class PermissionModel {
+    name: string;
 }
 ```
 
-### Ejemplo de esquema
+#### Esquema
 
 ```typescript
 // src/modules/permissions/schema/permission.schema.ts
-import { Schema } from 'mongoose';
-
-export const PermissionSchema = new Schema({
-	name: { type: String, required: true },
-	description: { type: String },
-});
+@Schema()
+export class Permission {
+    @Prop({ unique: true, uppercase: true, required: true, trim: true })
+    name: string;
+}
 ```
+
+### Roles
+
+Permite crear roles y asociarles permisos existentes. Los roles pueden ser consultados y actualizados, y cada rol puede tener múltiples permisos.
+
+#### Endpoints principales
+
+- `POST /api/v1/roles` - Crear un nuevo rol (con permisos opcionales)
+- `GET /api/v1/roles` - Listar roles (filtro opcional por nombre)
+- `PUT /api/v1/roles/:name` - Actualizar un rol por nombre
+- `DELETE /api/v1/roles/:name` - Eliminar un rol por nombre
+
+#### Modelo
+
+```typescript
+// src/modules/roles/model/role-model.ts
+export class RoleModel {
+    name: string;
+    permissions?: PermissionModel[];
+}
+```
+
+#### Esquema
+
+```typescript
+// src/modules/roles/schemas/role.schema.ts
+@Schema()
+export class Role {
+    @Prop({ unique: true, uppercase: true, trim: true })
+    name: string;
+
+    @Prop({ type: [Types.ObjectId], ref: 'Permission', default: [] })
+    permissions: Types.ObjectId[];
+}
+```
+
+#### Ejemplo de creación de rol con permisos
+
+```json
+POST /api/v1/roles
+{
+    "name": "admin",
+    "permissions": [
+        { "name": "CREATE" },
+        { "name": "DELETE" }
+    ]
+}
+```
+
+## Relación entre Roles y Permisos
+
+Los roles pueden tener múltiples permisos asociados. Al crear o actualizar un rol, se validan los permisos para asegurar que existan en la base de datos.
+
+## Ejecución y pruebas
+
+Para iniciar el proyecto en modo desarrollo:
+
+```bash
+npm run start:dev
+```
+
+Para ejecutar las pruebas:
+
+```bash
+npm run test
+```
+
+## Notas
+
+- Este README se irá actualizando conforme se agreguen nuevos módulos y funcionalidades a la API.
+- Para sugerencias o reportes de errores, crea un issue en el repositorio.
 
 ## Ejecución
 
