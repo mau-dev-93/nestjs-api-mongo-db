@@ -4,6 +4,7 @@ import { Role } from './schemas/role.schema';
 import { Model, Types } from 'mongoose';
 import { PermissionsService } from '../permissions/permissions.service';
 import { RoleModel } from './model/role-model';
+import { PermissionModel } from '../permissions/model/permission-model';
 
 @Injectable()
 export class RolesService {
@@ -84,6 +85,77 @@ export class RolesService {
 			return this.findRoleByName(role.name);
 		} else {
 			return this.createRole(role);
+		}
+	}
+
+	async addPermission(name: string, permission: PermissionModel) {
+		const roleExists = await this.findRoleByName(name);
+		if (roleExists) {
+			const permissionExists = await this.permissionService.findPermissionByName(permission.name);
+			if (permissionExists) {
+				const permissionRoleExists = await this.roleModel.findOne({
+					name: roleExists.name,
+					permissions: {
+						$in: permissionExists._id,
+					},
+				});
+
+				if (!permissionRoleExists) {
+					await roleExists.updateOne({
+						$push: {
+							permissions: permissionExists._id,
+						},
+					});
+				} else {
+					throw new ConflictException('El permiso ya está asignado en el rol');
+				}
+
+				return await this.findRoleByName(name);
+			} else {
+				throw new ConflictException('El permiso no existe');
+			}
+		} else {
+			throw new ConflictException('El rol no existe');
+		}
+	}
+
+	async removePermission(name: string, permission: PermissionModel) {
+		const roleExists = await this.findRoleByName(name);
+		if (roleExists) {
+			const permissionExists = await this.permissionService.findPermissionByName(permission.name);
+			if (permissionExists) {
+				const permissionRoleExists = await this.roleModel.findOne({
+					name: roleExists.name,
+					permissions: {
+						$in: permissionExists._id,
+					},
+				});
+
+				if (permissionRoleExists) {
+					await roleExists.updateOne({
+						$pull: {
+							permissions: permissionExists._id,
+						},
+					});
+
+					return await this.findRoleByName(name);
+				} else {
+					throw new ConflictException('El permiso no existe en el rol');
+				}
+			} else {
+				throw new ConflictException('El permiso no existe');
+			}
+		} else {
+			throw new ConflictException('El rol no existe');
+		}
+	}
+
+	async removeRole(name: string) {
+		const roleExists = await this.findRoleByName(name);
+		if (roleExists) {
+			return await this.roleModel.deleteOne();
+		} else {
+			throw new ConflictException('El rol no existe');
 		}
 	}
 }

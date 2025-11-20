@@ -80,7 +80,7 @@ export class PermissionsController {
 		description: 'Actualiza un permiso existente',
 	})
 	@ApiBody({
-		description: 'Actualiza un permiso usando el modelo PermissionUpdateModel',
+		description: 'Actuazliza un permiso usando el modelo PermissionUpdateModel',
 		type: PermissionUpdateModel,
 		examples: {
 			ejemplo1: {
@@ -105,12 +105,8 @@ export class PermissionsController {
 		status: 409,
 		description: 'Conflicto al actualizar el permiso',
 	})
-	async updatePermission(
-		@Body() permissionUpdateModel: PermissionUpdateModel,
-	) {
-		return await this.permissionsService.updatePermission(
-			permissionUpdateModel,
-		);
+	async updatePermission(@Body() permissionUpdateModel: PermissionUpdateModel) {
+		return await this.permissionsService.updatePermission(permissionUpdateModel);
 	}
 
 	@Delete('/:name')
